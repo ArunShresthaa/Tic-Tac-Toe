@@ -1,7 +1,13 @@
 const History = ({ history, moveTo, currentMove }) => {
   return (
     <div className="history-wrapper">
-      <h2>Current Game History</h2>
+      <h2
+        style={{
+          fontWeight: 'normal',
+        }}
+      >
+        Current Game History
+      </h2>
       <ul className="history">
         {history.map((_, index) => (
           <li key={index}>
