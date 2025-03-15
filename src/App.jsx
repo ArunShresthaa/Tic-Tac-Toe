@@ -4,7 +4,9 @@ import Board from './components/Board';
 function App() {
   return (
     <div className="app">
-      <Board />
+      <div>
+        <Board />
+      </div>
     </div>
   );
 }
