@@ -1,14 +1,18 @@
 import './styles.scss';
 import { useState } from 'react';
 import { calculateWinner } from './winner';
+import { getBotMove } from './nextBotMove';
 import Board from './components/Board';
 import StatusMessage from './components/StatusMessage';
-import History from './components/History';
+// import History from './components/History';
 import Reset from './components/Reset';
+import RadioButton from './components/RadioButton';
 
-const NEW_GAME = [{ squares: Array(9).fill(null), isXNext: false }];
+const NEW_GAME = [{ squares: Array(9).fill(null), isXNext: true }];
 
 function App() {
+  const [selectedOption, setSelectedOption] = useState('PVP');
+
   const [history, setHistory] = useState(NEW_GAME);
   const [currentMove, setcurrentMove] = useState(0);
 
@@ -41,6 +45,15 @@ function App() {
         ? currentHistory.slice(0, currentHistory.indexOf(lastGamingState) + 1)
         : currentHistory;
 
+      if (selectedOption == 'PVB') {
+        const nextMoveLocation = getBotMove(nextSquareState);
+        nextSquareState[nextMoveLocation] = 'O';
+        return base.concat({
+          squares: nextSquareState,
+          isXNext: true,
+        });
+      }
+
       return base.concat({
         squares: nextSquareState,
         isXNext: !lastGamingState.isXNext,
@@ -50,9 +63,9 @@ function App() {
     setcurrentMove(move => move + 1);
   };
 
-  const moveTo = move => {
-    setcurrentMove(move);
-  };
+  //   const moveTo = move => {
+  //     setcurrentMove(move);
+  //   };
 
   const resetGame = () => {
     setHistory(NEW_GAME);
@@ -64,6 +77,18 @@ function App() {
       <h1>
         TIC <span className="text-green">TAC</span> TOE
       </h1>
+      <RadioButton
+        name={'Select Mode'}
+        options={[
+          { label: '2 Player', value: 'PVP' },
+          { label: 'Player vs BOT', value: 'PVB' },
+        ]}
+        selected={selectedOption}
+        onChange={setSelectedOption}
+        setHistory={setHistory}
+        setcurrentMove={setcurrentMove}
+        NEW_GAME={NEW_GAME}
+      />
       <StatusMessage winner={winner} gamingBoard={gamingBoard} />
       <Board
         squares={gamingBoard.squares}
@@ -71,7 +96,7 @@ function App() {
         winningSquares={winningSquares}
       />
       <Reset resetGame={resetGame} winner={winner} />
-      <History history={history} moveTo={moveTo} currentMove={currentMove} />
+      {/* <History history={history} moveTo={moveTo} currentMove={currentMove} /> */}
     </div>
   );
 }
